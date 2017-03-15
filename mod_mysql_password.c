@@ -79,7 +79,7 @@ static modret_t *sql_auth_mysql_password(cmd_rec *cmd, const char *plaintext,
 
 
 #if defined(PR_SHARED_MODULE)
-static void sql_mod_unload_ev(const void *event_data, void *user_data) {
+static void mysql_password_mod_unload_ev(const void *event_data, void *user_data) {
   if (strcmp("mod_mysql_password.c", (const char *) event_data) == 0) {
     (void) sql_unregister_authtype("MysqlPassword");
   }
@@ -88,7 +88,7 @@ static void sql_mod_unload_ev(const void *event_data, void *user_data) {
 
 static int mysql_password_init(void) {
 #if defined(PR_SHARED_MODULE)
-  pr_event_register(&sql_module, "core.module-unload", sql_mod_unload_ev, NULL);
+  pr_event_register(&sql_module, "core.module-unload", mysql_password_mod_unload_ev, NULL);
 #endif /* PR_SHARED_MODULE */
 
   (void) sql_register_authtype("MysqlPassword", sql_auth_mysql_password);
@@ -127,4 +127,3 @@ module mysql_password_module = {
   /* Module version */
   MOD_MYSQL_PASSWORD_VERSION
 };
-
